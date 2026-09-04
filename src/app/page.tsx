@@ -16,11 +16,11 @@ const experimentPages: ExperimentPage[] = [
     tags: ["next/image", "LCP", "sizes", "loading"],
   },
   {
-    title: "React Query 캐시 타이밍",
+    title: "TanStack Query 캐시 타이밍",
     description:
       "staleTime과 gcTime이 fresh, stale, inactive, 삭제까지 어떻게 이어지는지 로그로 확인합니다.",
     href: "/experiments/react-query",
-    tags: ["staleTime", "gcTime", "cache"],
+    tags: ["TanStack Query", "staleTime", "gcTime"],
   },
 ];
 
@@ -34,7 +34,7 @@ export default function Home() {
             실험 목록
           </h1>
           <p className="max-w-lg text-base leading-7 text-zinc-600">
-            Next.js와 React Query 동작을 직접 확인하는 페이지입니다. 아래
+            Next.js와 TanStack Query 동작을 직접 확인하는 페이지입니다. 아래
             항목을 선택해 실험을 시작하세요.
           </p>
         </header>

@@ -232,7 +232,7 @@ export default function CacheLab() {
   return (
     <section className="flex flex-col gap-6 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold">6. 실습</h2>
+        <h2 className="text-xl font-semibold">7. 실습</h2>
         <p className="text-sm leading-6 text-zinc-600">
           1페이지와 2페이지를 오가며, 우측 하단 Devtools의 쿼리 키가 `1`에서
           `2`로 바뀌는지 먼저 보세요. 그다음 fresh·stale·GC를 로그와

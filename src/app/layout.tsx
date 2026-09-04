@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "프론트엔드 실험실",
-  description: "Next.js와 React Query 동작을 직접 확인하는 실험 페이지 모음",
+  description: "Next.js와 TanStack Query 동작을 직접 확인하는 실험 페이지 모음",
 };
 
 export default function RootLayout({

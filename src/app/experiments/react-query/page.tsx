@@ -137,7 +137,7 @@ const walkthrough: WalkthroughStep[] = [
 ]
 
 const checklist = [
-  '우측 하단 React Query Devtools를 연다.',
+  '우측 하단 TanStack Query Devtools를 연다.',
   '1페이지를 불러와 키의 세 번째 값이 1인지 확인한다.',
   '2페이지로 바꿔 키가 2로 바뀌고, 1페이지 줄이 Inactive가 되는지 본다.',
   '10초를 기다려 노란 Stale이 되는지 확인한다.',
@@ -145,14 +145,63 @@ const checklist = [
   '구독을 해제한 뒤 30초가 지나면 줄이 사라지는지 확인한다.',
 ]
 
+type ProviderOption = {
+  name: string
+  meaning: string
+}
+
+const providerOptions: ProviderOption[] = [
+  {
+    name: 'staleTime: 60 * 1000',
+    meaning:
+      '1분 동안은 최신으로 봅니다. 같은 키를 다시 써도 서버에 가지 않습니다. 라이브러리 기본값은 0이라, 앱에서는 보통 이렇게 올립니다.',
+  },
+  {
+    name: 'gcTime: 5 * 60 * 1000',
+    meaning:
+      '화면에서 쓰지 않게 된 캐시를 5분 동안 메모리에 남깁니다. 그 안에 같은 키로 돌아오면 기존 값을 다시 씁니다.',
+  },
+  {
+    name: 'retry: 1',
+    meaning: '조회가 실패하면 한 번만 다시 시도합니다. 무한 재시도를 막습니다.',
+  },
+  {
+    name: 'refetchOnWindowFocus: false',
+    meaning:
+      '브라우저 탭을 다시 활성화해도 자동으로 재요청하지 않습니다. 탭 전환이 잦은 관리 화면에서 요청이 폭주하는 것을 막습니다.',
+  },
+  {
+    name: 'refetchOnReconnect: true',
+    meaning: '인터넷이 끊겼다가 다시 연결되면, stale인 쿼리만 다시 받습니다.',
+  },
+  {
+    name: 'refetchOnMount: true',
+    meaning:
+      '컴포넌트가 다시 마운트됐을 때 stale이면 캐시를 먼저 보여주고 백그라운드에서 갱신합니다.',
+  },
+  {
+    name: 'mutations.retry: 0',
+    meaning:
+      '생성·수정·삭제는 실패해도 자동으로 다시 보내지 않습니다. 같은 요청이 두 번 나가면 데이터가 꼬일 수 있습니다.',
+  },
+]
+
 const providerSnippet = `'use client'
+
+import type { ReactNode } from 'react'
+import {
+  isServer,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 10 * 1000,
-        gcTime: 30 * 1000,
+        staleTime: 60 * 1000,
+        gcTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
@@ -162,10 +211,33 @@ const createQueryClient = () =>
         retry: 0,
       },
     },
-  })`
+  })
+
+let browserQueryClient: QueryClient | undefined
+
+const getQueryClient = () => {
+  if (isServer) {
+    return createQueryClient()
+  }
+
+  browserQueryClient ??= createQueryClient()
+
+  return browserQueryClient
+}
+
+export default function QueryProvider({ children }: { children: ReactNode }) {
+  const queryClient = getQueryClient()
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
+}`
 
 export const metadata = {
-  title: 'React Query 캐시 타이밍',
+  title: 'TanStack Query 캐시 타이밍',
   description:
     'queryKey, staleTime, gcTime을 Devtools 화면과 함께 초보자 기준으로 정리한 실험 노트',
 }
@@ -205,19 +277,74 @@ export default function ReactQueryExperimentPage() {
 
         <header className="flex flex-col gap-3">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            React Query 캐시 타이밍
+            TanStack Query 캐시 타이밍
           </h1>
           <p className="max-w-2xl text-base leading-7 text-zinc-600">
-            처음이면 실습 버튼보다 Devtools의 쿼리 키부터 보면 됩니다. 캐시는
+            패키지 이름은 `@tanstack/react-query`이고, 제품 이름은 TanStack
+            Query입니다. 예전에는 React Query라고 불렀습니다. 처음이면
+            QueryProvider 정석과 Devtools의 쿼리 키부터 보면 됩니다. 캐시는
             이름이 있는 서랍이고, `staleTime`은 그 서랍을 최신으로 보는 시간,
             `gcTime`은 안 쓰는 서랍을 버리는 시간입니다.
           </p>
         </header>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">1. 쿼리 키는 캐시의 이름입니다</h2>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-xl font-semibold">1. QueryProvider 정석</h2>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-zinc-500 underline underline-offset-4 hover:text-zinc-900"
+              >
+                기본값 문서
+              </a>
+              <a
+                href="https://tanstack.com/query/latest/docs/framework/react/guides/query-keys"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-zinc-500 underline underline-offset-4 hover:text-zinc-900"
+              >
+                쿼리 키 문서
+              </a>
+            </div>
+          </div>
           <p className="text-sm leading-6 text-zinc-600">
-            React Query는 서버 응답을 메모리에 넣어 둡니다. 그 한 줄을 찾는
+            Next.js App Router에서는 Provider를 클라이언트 컴포넌트로 두고,
+            이 실험 레이아웃처럼 트리 상단에 한 번만 감쌉니다. 서버에서는
+            요청마다 새 `QueryClient`를 만들고, 브라우저에서는 하나를 재사용해
+            캐시가 리렌더마다 날아가지 않게 합니다.
+          </p>
+          <pre className="overflow-x-auto rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-xs leading-6 text-zinc-800">
+            <code>{providerSnippet}</code>
+          </pre>
+          <div className="flex flex-col gap-2">
+            {providerOptions.map((option) => (
+              <article
+                key={option.name}
+                className="rounded-2xl border border-zinc-200 bg-white p-4"
+              >
+                <p className="font-mono text-sm font-semibold text-zinc-900">
+                  {option.name}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                  {option.meaning}
+                </p>
+              </article>
+            ))}
+          </div>
+          <p className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-600">
+            위 값이 앱 전체 기본값입니다. 아래 실습 목록 쿼리만 staleTime
+            10초, gcTime 30초로 덮어써서 상태가 바뀌는 순간을 바로 볼 수
+            있습니다.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold">2. 쿼리 키는 캐시의 이름입니다</h2>
+          <p className="text-sm leading-6 text-zinc-600">
+            TanStack Query는 서버 응답을 메모리에 넣어 둡니다. 그 한 줄을 찾는
             이름이 쿼리 키입니다. 아래는 1페이지를 막 받아 온 직후 Devtools
             화면입니다.
           </p>
@@ -253,7 +380,7 @@ export default function ReactQueryExperimentPage() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">2. 위쪽 숫자가 상태입니다</h2>
+          <h2 className="text-xl font-semibold">3. 위쪽 숫자가 상태입니다</h2>
           <p className="text-sm leading-6 text-zinc-600">
             같은 Devtools를 상태마다 찍어 두었습니다. 줄의 색깔과 오른쪽 위
             숫자를 같이 보면 됩니다.
@@ -280,9 +407,9 @@ export default function ReactQueryExperimentPage() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">3. staleTime은 언제 다시 물을지입니다</h2>
+          <h2 className="text-xl font-semibold">4. staleTime은 언제 다시 물을지입니다</h2>
           <p className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-            staleTime: 10 * 1000 // 10초
+            staleTime: 60 * 1000 // 정석 1분 · 이 실험 목록은 10초
           </p>
           <p className="text-sm leading-6 text-zinc-600">
             아래 두 장은 같은 키입니다. 캐시가 없어진 게 아니라, 최신으로 보는
@@ -317,9 +444,9 @@ export default function ReactQueryExperimentPage() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">4. gcTime은 안 쓰는 캐시를 언제 버릴지입니다</h2>
+          <h2 className="text-xl font-semibold">5. gcTime은 안 쓰는 캐시를 언제 버릴지입니다</h2>
           <p className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-            gcTime: 30 * 1000 // 30초
+            gcTime: 5 * 60 * 1000 // 정석 5분 · 이 실험 목록은 30초
           </p>
           <p className="text-sm leading-6 text-zinc-600">
             2페이지를 보는 동안 1페이지 컴포넌트는 사라집니다. 그때 1페이지
@@ -354,10 +481,10 @@ export default function ReactQueryExperimentPage() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">5. 페이지를 오갈 때 키가 하는 일</h2>
+          <h2 className="text-xl font-semibold">6. 페이지를 오갈 때 키가 하는 일</h2>
           <p className="text-sm leading-6 text-zinc-600">
-            이 실험은 staleTime 10초, gcTime 30초입니다. 아래 순서대로 상태가
-            바뀝니다.
+            정석 Provider는 1분 / 5분입니다. 아래 실습 목록은 10초 / 30초로
+            덮어써서 같은 순서를 더 빨리 볼 수 있습니다.
           </p>
           <ol className="flex flex-col gap-8">
             {walkthrough.map((step, index) => (
@@ -393,35 +520,14 @@ export default function ReactQueryExperimentPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">따라 해보기</h2>
           <p className="text-sm leading-6 text-zinc-600">
-            실습 영역에서 우측 하단 꽃 모양 React Query Devtools를 열고 아래
-            순서대로 확인하세요.
+            실습 영역에서 우측 하단 꽃 모양 TanStack Query Devtools를 열고
+            아래 순서대로 확인하세요.
           </p>
           <ol className="flex list-decimal flex-col gap-2 pl-5 text-sm leading-6 text-zinc-600">
             {checklist.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ol>
-        </section>
-
-        <section className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-xl font-semibold">QueryProvider 기본값</h2>
-            <a
-              href="https://tanstack.com/query/latest/docs/framework/react/guides/query-keys"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-zinc-500 underline underline-offset-4 hover:text-zinc-900"
-            >
-              쿼리 키 문서
-            </a>
-          </div>
-          <p className="text-sm leading-6 text-zinc-600">
-            이 실험 레이아웃은 staleTime 10초, gcTime 30초입니다. 상태가 바뀌는
-            순간을 Devtools에서 바로 볼 수 있습니다.
-          </p>
-          <pre className="overflow-x-auto rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-xs leading-6 text-zinc-800">
-            <code>{providerSnippet}</code>
-          </pre>
         </section>
       </main>
     </div>
