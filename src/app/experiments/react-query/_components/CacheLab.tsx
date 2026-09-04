@@ -8,24 +8,21 @@ import {
   formatClock,
   formatDuration,
   formatIsoTime,
+  GC_TIME,
   getLabQueryKey,
-  getTimePreset,
   QUERY_LAB_ROOT_KEY,
-  TIME_PRESETS,
+  STALE_TIME,
   type LabLog,
   type LabLogTone,
   type LabPage,
   type LabPagePayload,
   type PushLabLog,
-  type TimePreset,
-  type TimePresetId,
 } from '../_lib/queryLab'
 
 type CachePhase = 'missing' | 'loading' | 'fresh' | 'stale' | 'refetching' | 'inactive'
 
 type LabQueryViewProps = {
   page: LabPage
-  preset: TimePreset
   failNextRef: MutableRefObject<boolean>
   logRef: MutableRefObject<PushLabLog>
   onConsumeFailFlag: () => void
@@ -88,7 +85,6 @@ const getQueryPage = (query: Query) => {
 export default function CacheLab() {
   const [page, setPage] = useState<LabPage>(1)
   const [isSubscribed, setIsSubscribed] = useState(true)
-  const [presetId, setPresetId] = useState<TimePresetId>('fast')
   const [failNext, setFailNext] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const [logs, setLogs] = useState<LabLog[]>([])
@@ -100,8 +96,7 @@ export default function CacheLab() {
 
   const queryClient = useQueryClient()
 
-  const preset = getTimePreset(presetId)
-  const queryKey = getLabQueryKey(page, preset.id)
+  const queryKey = getLabQueryKey(page)
   const cacheQueries = queryClient
     .getQueryCache()
     .findAll({ queryKey: [QUERY_LAB_ROOT_KEY] })
@@ -111,7 +106,7 @@ export default function CacheLab() {
   const activePhase = getCachePhase({
     query: activeQuery,
     now,
-    staleTime: preset.staleTime,
+    staleTime: STALE_TIME,
   })
 
   failNextRef.current = failNext
@@ -156,15 +151,6 @@ export default function CacheLab() {
         : '화면에서 쿼리를 쓰지 않으므로 gcTime 카운트다운이 시작됩니다.',
     )
     setIsSubscribed(nextSubscribed)
-  }
-
-  const handleChangePreset = (nextPresetId: TimePresetId) => {
-    if (nextPresetId === presetId) return
-
-    queryClient.removeQueries({ queryKey: [QUERY_LAB_ROOT_KEY] })
-    inactiveAtRef.current = {}
-    pushLog('info', '시간 설정 변경', getTimePreset(nextPresetId).summary)
-    setPresetId(nextPresetId)
   }
 
   const handleToggleFailNext = () => {
@@ -248,34 +234,15 @@ export default function CacheLab() {
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold">6. 실습</h2>
         <p className="text-sm leading-6 text-zinc-600">
-          가속 모드에서 1페이지와 2페이지를 오가며, 우측 하단 Devtools의 쿼리
-          키가 `1`에서 `2`로 바뀌는지 먼저 보세요. 그다음 fresh·stale·GC를
-          로그와 콘솔(`react-query-lab`)에서 맞춥니다.
+          1페이지와 2페이지를 오가며, 우측 하단 Devtools의 쿼리 키가 `1`에서
+          `2`로 바뀌는지 먼저 보세요. 그다음 fresh·stale·GC를 로그와
+          콘솔(`react-query-lab`)에서 맞춥니다.
         </p>
         <p className="text-xs text-zinc-500">
-          staleTime {formatDuration(preset.staleTime)} · gcTime{' '}
-          {formatDuration(preset.gcTime)}
+          staleTime {formatDuration(STALE_TIME)} · gcTime{' '}
+          {formatDuration(GC_TIME)}
         </p>
       </div>
-
-      <div className="flex flex-wrap gap-2">
-        {TIME_PRESETS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={item.id === presetId}
-            onClick={() => handleChangePreset(item.id)}
-            className={`rounded-lg border px-3 py-1.5 text-sm ${
-              item.id === presetId
-                ? 'border-zinc-900 bg-zinc-900 text-white'
-                : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-      <p className="text-sm leading-6 text-zinc-600">{preset.summary}</p>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="flex flex-col gap-4">
@@ -340,7 +307,6 @@ export default function CacheLab() {
           {isSubscribed ? (
             <LabQueryView
               page={page}
-              preset={preset}
               failNextRef={failNextRef}
               logRef={logRef}
               onConsumeFailFlag={handleConsumeFailFlag}
@@ -399,16 +365,16 @@ export default function CacheLab() {
                   const phase = getCachePhase({
                     query,
                     now,
-                    staleTime: preset.staleTime,
+                    staleTime: STALE_TIME,
                   })
                   const staleRemaining = Math.max(
                     0,
-                    query.state.dataUpdatedAt + preset.staleTime - now,
+                    query.state.dataUpdatedAt + STALE_TIME - now,
                   )
                   const inactiveAt = inactiveAtRef.current[cacheKey]
                   const gcRemaining =
                     inactiveAt !== undefined
-                      ? Math.max(0, inactiveAt + preset.gcTime - now)
+                      ? Math.max(0, inactiveAt + GC_TIME - now)
                       : null
 
                   return (
@@ -453,14 +419,13 @@ export default function CacheLab() {
 
 function LabQueryView({
   page,
-  preset,
   failNextRef,
   logRef,
   onConsumeFailFlag,
 }: LabQueryViewProps) {
   // ! [GET] 실험실 목록 조회
   const itemsQuery = useQuery({
-    queryKey: getLabQueryKey(page, preset.id),
+    queryKey: getLabQueryKey(page),
     queryFn: async () => {
       const shouldFail = failNextRef.current
 
@@ -500,8 +465,8 @@ function LabQueryView({
 
       return payload
     },
-    staleTime: preset.staleTime,
-    gcTime: preset.gcTime,
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
     retry: 0,
   })
 

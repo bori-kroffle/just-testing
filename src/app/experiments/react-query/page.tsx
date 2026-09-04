@@ -49,10 +49,6 @@ const queryKeyParts: KeyPart[] = [
     value: '1',
     meaning: '지금 보고 있는 페이지 번호입니다. 2페이지로 가면 여기가 2가 됩니다.',
   },
-  {
-    value: 'fast',
-    meaning: '가속 타이머를 쓰고 있다는 표시입니다. 문서 그대로 모드면 docs로 바뀝니다.',
-  },
 ]
 
 const statusNotes: StatusNote[] = [
@@ -60,16 +56,15 @@ const statusNotes: StatusNote[] = [
     name: 'Fresh',
     meaning:
       '방금 받아 온 캐시입니다. 같은 키를 다시 써도 서버에 요청하지 않습니다.',
-    src: '/images/react-query/devtools-fresh.png',
+    src: '/images/react-query/query-fresh.png',
     alt: 'TanStack Query Devtools에서 Fresh 1, 쿼리 키 page 1이 초록으로 표시된 화면',
-    caption:
-      'Fresh 1. 가속 모드에서는 이 상태가 약 10초 동안 유지됩니다.',
+    caption: 'Fresh 1. staleTime 10초 동안 이 상태가 유지됩니다.',
   },
   {
     name: 'Fetching',
     meaning:
       '지금 서버에 다녀오는 중입니다. 처음 불러올 때와 오래된 캐시를 다시 받을 때 모두 여기가 1이 됩니다.',
-    src: '/images/react-query/devtools-fetching.png',
+    src: '/images/react-query/query-fetching.png',
     alt: 'TanStack Query Devtools에서 Fetching 1로 표시된 화면',
     caption: 'Fetching 1. 파란 숫자가 요청이 끝나기 전까지 유지됩니다.',
   },
@@ -77,7 +72,7 @@ const statusNotes: StatusNote[] = [
     name: 'Stale',
     meaning:
       '캐시는 남아 있지만, 오래됐을 수 있다고 표시합니다. 지워진 것이 아닙니다.',
-    src: '/images/react-query/devtools-stale-page1.png',
+    src: '/images/react-query/query-stale.png',
     alt: 'TanStack Query Devtools에서 Stale 1, 쿼리 키 page 1이 노란 줄로 표시된 화면',
     caption:
       'Stale 1. staleTime이 지나도 줄은 그대로 있고, 색깔만 노란색으로 바뀝니다.',
@@ -86,7 +81,7 @@ const statusNotes: StatusNote[] = [
     name: 'Inactive',
     meaning:
       '화면에서 쓰지 않는 캐시입니다. 2페이지를 보면 1페이지 줄이 회색 Inactive가 됩니다.',
-    src: '/images/react-query/devtools-inactive.png',
+    src: '/images/react-query/query-inactive.png',
     alt: 'TanStack Query Devtools에서 2페이지는 Fresh, 1페이지는 Inactive인 화면',
     caption:
       'Fresh 1 · Inactive 1. 위 줄은 보고 있는 2페이지, 아래 줄은 아직 남아 있는 1페이지입니다.',
@@ -98,8 +93,8 @@ const walkthrough: WalkthroughStep[] = [
     title: '1페이지를 연다',
     detail:
       '서버에서 목록을 받아 캐시에 넣습니다. Devtools에 줄이 하나 생기고, 키의 세 번째 값이 1입니다.',
-    queryKey: '["react-query-lab", "items", 1, "fast"]',
-    src: '/images/react-query/devtools-fresh.png',
+    queryKey: '["react-query-lab", "items", 1]',
+    src: '/images/react-query/query-fresh.png',
     alt: '1페이지를 막 불러온 뒤 Fresh 상태인 Devtools',
     caption: '요청이 끝나면 Fresh 1이 됩니다.',
   },
@@ -107,17 +102,17 @@ const walkthrough: WalkthroughStep[] = [
     title: '2페이지로 이동한다',
     detail:
       '키가 달라서 1페이지 캐시를 덮어쓰지 않습니다. 1페이지 줄은 Inactive가 되고, 2페이지 줄이 새로 생깁니다.',
-    queryKey: '["react-query-lab", "items", 2, "fast"]',
-    src: '/images/react-query/devtools-inactive.png',
+    queryKey: '["react-query-lab", "items", 2]',
+    src: '/images/react-query/query-inactive.png',
     alt: '2페이지 Fresh와 1페이지 Inactive가 함께 보이는 Devtools',
     caption: '같은 목록이 아니라, 이름이 다른 서랍 두 개입니다.',
   },
   {
     title: '10초를 기다린다',
     detail:
-      '가속 모드의 staleTime이 지나면 노란 Stale이 됩니다. 캐시가 지워진 것은 아닙니다.',
+      'staleTime이 지나면 노란 Stale이 됩니다. 캐시가 지워진 것은 아닙니다.',
     queryKey: 'Stale 1 · Inactive 0',
-    src: '/images/react-query/devtools-stale-page1.png',
+    src: '/images/react-query/query-stale.png',
     alt: 'staleTime이 지나 Stale이 된 1페이지 쿼리',
     caption: '노란 줄은 오래됐을 수 있다는 표시일 뿐입니다.',
   },
@@ -126,7 +121,7 @@ const walkthrough: WalkthroughStep[] = [
     detail:
       'stale인 키를 다시 쓰거나 수동 재요청을 누르면, 기존 목록을 먼저 보여 주고 백그라운드에서 다시 받습니다.',
     queryKey: '기존 목록을 먼저 표시 → Fetching 1',
-    src: '/images/react-query/devtools-fetching.png',
+    src: '/images/react-query/query-fetching.png',
     alt: '백그라운드 재요청 중 Fetching 1인 Devtools',
     caption: 'Fetching이 끝나야 requestId가 바뀝니다.',
   },
@@ -135,7 +130,7 @@ const walkthrough: WalkthroughStep[] = [
     detail:
       'gcTime이 지나면 Devtools에서 그 줄이 사라집니다. 다시 열면 초기 로딩부터 시작합니다.',
     queryKey: '줄이 없음 = 캐시 삭제 완료',
-    src: '/images/react-query/devtools-gc.png',
+    src: '/images/react-query/query-gc.png',
     alt: 'gcTime이 지나 쿼리 줄이 모두 사라진 Devtools',
     caption: 'Fresh 0 · Stale 0 · Inactive 0. 서랍 자체가 없어진 상태입니다.',
   },
@@ -145,7 +140,7 @@ const checklist = [
   '우측 하단 React Query Devtools를 연다.',
   '1페이지를 불러와 키의 세 번째 값이 1인지 확인한다.',
   '2페이지로 바꿔 키가 2로 바뀌고, 1페이지 줄이 Inactive가 되는지 본다.',
-  '가속 모드에서 10초를 기다려 노란 Stale이 되는지 확인한다.',
+  '10초를 기다려 노란 Stale이 되는지 확인한다.',
   '1페이지로 돌아와 목록이 먼저 보이고, 로그에 서버 요청이 생기는지 본다.',
   '구독을 해제한 뒤 30초가 지나면 줄이 사라지는지 확인한다.',
 ]
@@ -156,8 +151,8 @@ const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000,
-        gcTime: 5 * 60 * 1000,
+        staleTime: 10 * 1000,
+        gcTime: 30 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
@@ -227,9 +222,9 @@ export default function ReactQueryExperimentPage() {
             화면입니다.
           </p>
           <DevtoolsFigure
-            src="/images/react-query/devtools-fresh.png"
-            alt="TanStack Query Devtools에서 ['react-query-lab', 'items', 1, 'fast'] 키가 Fresh로 표시된 화면"
-            caption="초록 줄이 캐시 한 개입니다. 키가 ['react-query-lab', 'items', 1, 'fast']이면 1페이지 목록이라는 뜻입니다."
+            src="/images/react-query/query-fresh.png"
+            alt="TanStack Query Devtools에서 ['react-query-lab', 'items', 1] 키가 Fresh로 표시된 화면"
+            caption="초록 줄이 캐시 한 개입니다. 키가 ['react-query-lab', 'items', 1]이면 1페이지 목록이라는 뜻입니다."
             priority
           />
           <div className="flex flex-col gap-2">
@@ -250,7 +245,7 @@ export default function ReactQueryExperimentPage() {
           <p className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-600">
             2페이지는 세 번째 값만 다릅니다.{' '}
             <code className="rounded bg-white px-1 py-0.5 font-mono text-xs">
-              ["react-query-lab", "items", 2, "fast"]
+              ["react-query-lab", "items", 2]
             </code>
             . 키가 다르면 완전히 다른 캐시입니다. 2페이지로 이동해도 1페이지
             데이터가 덮어씌워지지 않습니다.
@@ -287,7 +282,7 @@ export default function ReactQueryExperimentPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">3. staleTime은 언제 다시 물을지입니다</h2>
           <p className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-            staleTime: 1 * 60 * 1000 // 문서 기본 1분 · 실습 가속은 10초
+            staleTime: 10 * 1000 // 10초
           </p>
           <p className="text-sm leading-6 text-zinc-600">
             아래 두 장은 같은 키입니다. 캐시가 없어진 게 아니라, 최신으로 보는
@@ -301,7 +296,7 @@ export default function ReactQueryExperimentPage() {
                 보여 줍니다.
               </p>
               <DevtoolsFigure
-                src="/images/react-query/devtools-fresh.png"
+                src="/images/react-query/query-fresh.png"
                 alt="staleTime 안의 Fresh 상태"
                 caption="Fresh 1. 아직 다시 묻지 않습니다."
               />
@@ -313,7 +308,7 @@ export default function ReactQueryExperimentPage() {
                 때만 백그라운드에서 다시 요청합니다.
               </p>
               <DevtoolsFigure
-                src="/images/react-query/devtools-stale-page1.png"
+                src="/images/react-query/query-stale.png"
                 alt="staleTime이 지나 Stale이 된 상태"
                 caption="Stale 1. 줄이 남아 있는 것이 핵심입니다."
               />
@@ -324,7 +319,7 @@ export default function ReactQueryExperimentPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">4. gcTime은 안 쓰는 캐시를 언제 버릴지입니다</h2>
           <p className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-            gcTime: 5 * 60 * 1000 // 문서 기본 5분 · 실습 가속은 30초
+            gcTime: 30 * 1000 // 30초
           </p>
           <p className="text-sm leading-6 text-zinc-600">
             2페이지를 보는 동안 1페이지 컴포넌트는 사라집니다. 그때 1페이지
@@ -338,7 +333,7 @@ export default function ReactQueryExperimentPage() {
                 키로 돌아오면 기존 캐시를 다시 씁니다.
               </p>
               <DevtoolsFigure
-                src="/images/react-query/devtools-inactive.png"
+                src="/images/react-query/query-inactive.png"
                 alt="1페이지가 Inactive로 남아 있는 화면"
                 caption="아래 회색 줄이 1페이지입니다. 아직 서랍은 있습니다."
               />
@@ -350,7 +345,7 @@ export default function ReactQueryExperimentPage() {
                 새로 요청합니다.
               </p>
               <DevtoolsFigure
-                src="/images/react-query/devtools-gc.png"
+                src="/images/react-query/query-gc.png"
                 alt="gcTime 이후 쿼리가 모두 사라진 화면"
                 caption="숫자가 전부 0이면 캐시가 비어 있는 것입니다."
               />
@@ -361,8 +356,8 @@ export default function ReactQueryExperimentPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">5. 페이지를 오갈 때 키가 하는 일</h2>
           <p className="text-sm leading-6 text-zinc-600">
-            아래는 문서 기본값(1분 / 5분) 기준 이야기입니다. 실습은 가속
-            모드라 10초 / 30초로 같은 순서를 더 빨리 볼 수 있습니다.
+            이 실험은 staleTime 10초, gcTime 30초입니다. 아래 순서대로 상태가
+            바뀝니다.
           </p>
           <ol className="flex flex-col gap-8">
             {walkthrough.map((step, index) => (
@@ -398,8 +393,8 @@ export default function ReactQueryExperimentPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">따라 해보기</h2>
           <p className="text-sm leading-6 text-zinc-600">
-            실습 영역에서 가속을 유지한 채, 우측 하단 꽃 모양 React Query
-            Devtools를 열고 아래 순서대로 확인하세요.
+            실습 영역에서 우측 하단 꽃 모양 React Query Devtools를 열고 아래
+            순서대로 확인하세요.
           </p>
           <ol className="flex list-decimal flex-col gap-2 pl-5 text-sm leading-6 text-zinc-600">
             {checklist.map((item) => (
@@ -421,8 +416,8 @@ export default function ReactQueryExperimentPage() {
             </a>
           </div>
           <p className="text-sm leading-6 text-zinc-600">
-            이 실험 레이아웃의 기본값은 1분 / 5분입니다. 실습 버튼의 가속
-            모드는 이 쿼리에만 10초 / 30초를 덮어씁니다.
+            이 실험 레이아웃은 staleTime 10초, gcTime 30초입니다. 상태가 바뀌는
+            순간을 Devtools에서 바로 볼 수 있습니다.
           </p>
           <pre className="overflow-x-auto rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-xs leading-6 text-zinc-800">
             <code>{providerSnippet}</code>

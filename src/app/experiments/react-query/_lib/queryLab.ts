@@ -1,15 +1,5 @@
 export type LabPage = 1 | 2
 
-export type TimePresetId = 'fast' | 'docs'
-
-export type TimePreset = {
-  id: TimePresetId
-  label: string
-  staleTime: number
-  gcTime: number
-  summary: string
-}
-
 export type LabItem = {
   id: string
   title: string
@@ -41,28 +31,11 @@ export type PushLabLog = (
 
 export const QUERY_LAB_ROOT_KEY = 'react-query-lab'
 
-export const TIME_PRESETS: TimePreset[] = [
-  {
-    id: 'fast',
-    label: '가속',
-    staleTime: 10 * 1000,
-    gcTime: 30 * 1000,
-    summary: 'fresh 10초 / GC 30초. 로그를 바로 확인할 수 있습니다.',
-  },
-  {
-    id: 'docs',
-    label: '문서 그대로',
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,
-    summary: 'Notion 노트와 같은 fresh 1분 / GC 5분입니다.',
-  },
-]
+export const STALE_TIME = 10 * 1000
+export const GC_TIME = 30 * 1000
 
-export const getTimePreset = (presetId: TimePresetId) =>
-  TIME_PRESETS.find((preset) => preset.id === presetId) ?? TIME_PRESETS[0]
-
-export const getLabQueryKey = (page: LabPage, presetId: TimePresetId) =>
-  [QUERY_LAB_ROOT_KEY, 'items', page, presetId] as const
+export const getLabQueryKey = (page: LabPage) =>
+  [QUERY_LAB_ROOT_KEY, 'items', page] as const
 
 export const formatClock = (timestamp: number) => {
   const date = new Date(timestamp)
