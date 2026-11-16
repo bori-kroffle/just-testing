@@ -1,0 +1,505 @@
+/* Local K-미라클 tokens. System font only — no Google Fonts. */
+.kad-page {
+  --navy-950: oklch(0.2 0.06 268);
+  --navy-900: oklch(0.26 0.085 268);
+  --navy-800: oklch(0.33 0.09 268);
+  --navy-700: oklch(0.42 0.09 268);
+  --navy-400: oklch(0.68 0.06 266);
+  --navy-200: oklch(0.88 0.03 265);
+  --navy-100: oklch(0.94 0.018 265);
+  --navy-50: oklch(0.975 0.008 265);
+  --brand-red: oklch(0.54 0.205 27);
+  --brand-red-soft: oklch(0.96 0.025 20);
+  min-height: 100%;
+  background: var(--navy-50);
+  color: var(--navy-950);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+}
+
+.kad-page-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 4rem 1.5rem 5rem;
+}
+
+.kad-page-back {
+  font-size: 0.875rem;
+  color: var(--navy-700);
+  text-decoration: none;
+}
+
+.kad-page-back:hover {
+  color: var(--navy-950);
+}
+
+.kad-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  max-width: 36rem;
+}
+
+.kad-page-eyebrow {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--navy-700);
+}
+
+.kad-page-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.kad-page-lead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--navy-800);
+}
+
+.kad-page-stage {
+  margin-top: 2.5rem;
+}
+
+.kad {
+  --navy-950: oklch(0.2 0.06 268);
+  --navy-900: oklch(0.26 0.085 268);
+  --navy-800: oklch(0.33 0.09 268);
+  --navy-700: oklch(0.42 0.09 268);
+  --navy-400: oklch(0.68 0.06 266);
+  --navy-200: oklch(0.88 0.03 265);
+  --navy-100: oklch(0.94 0.018 265);
+  --navy-50: oklch(0.975 0.008 265);
+  --brand-red: oklch(0.54 0.205 27);
+  --brand-red-soft: oklch(0.96 0.025 20);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+  color: var(--navy-950);
+}
+
+.kad-window {
+  height: 100%;
+}
+
+.kad-toolbar-note {
+  font-size: 12px;
+  color: var(--navy-700);
+}
+
+.kad-side {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 10px 16px;
+  color: var(--navy-950);
+}
+
+.kad-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kad-brand-mark {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--navy-900);
+}
+
+.kad-brand-mark::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--brand-red);
+}
+
+.kad-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kad-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--navy-800);
+}
+
+.kad-nav-item[data-active] {
+  background: var(--navy-100);
+  color: var(--navy-950);
+}
+
+.kad-side-foot {
+  margin-top: auto;
+  padding: 0 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--navy-400);
+}
+
+.kad-shell {
+  position: relative;
+  height: 100%;
+  background: #fff;
+  color: var(--navy-950);
+}
+
+.kad-view {
+  height: 100%;
+  padding: 18px 24px 20px;
+}
+
+.kad-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.kad-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.kad-head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--navy-700);
+}
+
+.kad-crumb {
+  margin: 0 0 4px !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  color: var(--navy-400) !important;
+}
+
+.kad-table-head,
+.kad-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr 0.7fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.kad-table-head {
+  padding: 0 12px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-400);
+}
+
+.kad-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.kad-row {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.kad-row[data-featured] {
+  background: var(--navy-50);
+}
+
+.kad-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.kad-who strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.kad-muted {
+  font-size: 12px;
+  color: var(--navy-700);
+}
+
+.kad-detail {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+}
+
+.kad-card {
+  border: 1px solid var(--navy-100);
+  border-radius: 14px;
+  background: #fff;
+  padding: 16px 18px;
+}
+
+.kad-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--navy-50);
+  border-color: transparent;
+}
+
+.kad-profile strong {
+  display: block;
+  font-size: 15px;
+}
+
+.kad-profile p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--navy-700);
+}
+
+.kad-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin: 0;
+  padding: 8px 4px;
+}
+
+.kad-fields dt {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-400);
+}
+
+.kad-fields dd {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.kad-danger-btn {
+  background: var(--brand-red) !important;
+  color: #fff !important;
+}
+
+.kad-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 28px;
+  background: color-mix(in oklab, var(--navy-950) 18%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.kad-panel[data-show] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.kad-panel-card {
+  width: 520px;
+  padding: 20px 22px 18px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 40px color-mix(in oklab, var(--navy-950) 16%, transparent);
+}
+
+.kad-panel-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.kad-panel-card > p {
+  margin: 4px 0 16px;
+  font-size: 12px;
+  color: var(--navy-700);
+}
+
+.kad-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.kad-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-700);
+  text-align: center;
+}
+
+.kad-step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--navy-100);
+  color: var(--navy-700);
+  font-size: 11px;
+}
+
+.kad-step[data-done] .kad-step-dot,
+.kad-step[data-current] .kad-step-dot {
+  background: var(--navy-900);
+  color: #fff;
+}
+
+.kad-step[data-current] {
+  background: var(--navy-50);
+  color: var(--navy-950);
+  box-shadow: inset 0 0 0 1px var(--navy-200);
+}
+
+.kad-contracts {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+}
+
+.kad-contract[data-featured] {
+  background: var(--navy-50);
+  border-color: transparent;
+}
+
+.kad-contract-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kad-contract-top strong {
+  font-size: 16px;
+}
+
+.kad-amount {
+  margin: 18px 0 16px;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  color: var(--navy-950);
+}
+
+.kad-contract[data-featured] .kad-amount {
+  color: var(--brand-red);
+}
+
+.kad-meta {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+}
+
+.kad-meta dt {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-400);
+}
+
+.kad-meta dd {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.kad-total {
+  margin: 0;
+  font-size: 13px;
+  color: var(--navy-700);
+}
+
+.kad-total strong {
+  margin-left: 6px;
+  font-size: 18px;
+  color: var(--brand-red);
+}
+
+.kad-fee-head,
+.kad-fee-row {
+  grid-template-columns: 1.3fr 1fr 0.8fr 1.1fr;
+}
+
+.kad-fee {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--brand-red);
+}
+
+.kad[data-layout="compact"] .kad-view {
+  padding: 16px 14px 18px;
+}
+
+.kad[data-layout="compact"] .kad-detail,
+.kad[data-layout="compact"] .kad-contracts,
+.kad[data-layout="compact"] .kad-steps,
+.kad[data-layout="compact"] .kad-fields {
+  grid-template-columns: 1fr;
+}
+
+.kad[data-layout="compact"] .kad-table-head {
+  display: none;
+}
+
+.kad[data-layout="compact"] .kad-row,
+.kad[data-layout="compact"] .kad-fee-row {
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+}
+
+.kad[data-layout="compact"] .kad-row > :nth-child(2),
+.kad[data-layout="compact"] .kad-fee-row > :nth-child(2),
+.kad[data-layout="compact"] .kad-fee-row > :nth-child(3) {
+  display: none;
+}
+
+.kad[data-layout="compact"] .kad-panel-card {
+  width: 100%;
+}
+
+.kad-shell .ss-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 6;
+}

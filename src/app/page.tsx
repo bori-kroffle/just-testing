@@ -29,6 +29,20 @@ const experimentPages: ExperimentPage[] = [
     href: "/experiments/infinite-scroll",
     tags: ["TanStack Query", "useInfiniteQuery", "cursor"],
   },
+  {
+    title: "홈페이지 히어로 데모",
+    description:
+      "대시보드에 피드백을 남기고 메모 창에 붙이는 짧은 반복 장면입니다.",
+    href: "/experiments/hero-demo",
+    tags: ["Stageshow", "히어로", "루프"],
+  },
+  {
+    title: "K-미라클 관리자 흐름 데모",
+    description:
+      "지원자 목록에서 상세·단계 변경을 거쳐 기업 계약과 수수료까지 이어지는 예시 화면입니다.",
+    href: "/experiments/kmiracle-admin-demo",
+    tags: ["Stageshow", "K-미라클", "관리자"],
+  },
 ];
 
 export default function Home() {
