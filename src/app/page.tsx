@@ -22,6 +22,13 @@ const experimentPages: ExperimentPage[] = [
     href: "/experiments/react-query",
     tags: ["TanStack Query", "staleTime", "gcTime"],
   },
+  {
+    title: "상품 무한 스크롤",
+    description:
+      "서버 컴포넌트 첫 페이지 + useInfiniteQuery + id 커서 + IntersectionObserver 센티널로 9개씩 이어 붙입니다.",
+    href: "/experiments/infinite-scroll",
+    tags: ["TanStack Query", "useInfiniteQuery", "cursor"],
+  },
 ];
 
 export default function Home() {
